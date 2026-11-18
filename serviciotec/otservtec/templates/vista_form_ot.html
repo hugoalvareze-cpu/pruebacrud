@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %} <!-- Carga del módulo de archivos estáticos de Django -->
+
+{% block content %}
+<div class="container my-4">
+    <!-- Botones de navegación e impresión (se ocultan al imprimir) -->
+    <div class="d-flex justify-content-between align-items-center mb-4 d-print-none">
+        <a href="{% url 'ot_total' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a Historial Total
+        </a>
+        <div>
+            {% if user.is_authenticated %}
+
+            <a href="{% url 'form_modificar_ot' ot.pk %}" class="btn btn-warning me-2">
+                <i class="bi bi-pencil"></i> Modificar OT
+            </a>
+            {% endif %}
+
+            <button onclick="window.print()" class="btn btn-primary">
+                <i class="bi bi-printer"></i> Imprimir Documento
+            </button>
+        </div>
+    </div>
+
+    <!-- Hoja de Documento / Ficha Técnica -->
+    <div class="card shadow-lg border-0 p-4 bg-white rounded-3">
+        
+        <!-- Encabezado del Documento con Logo ANAM -->
+        <div class="row border-bottom pb-3 mb-4 align-items-center">
+            <div class="col-md-2 text-center text-md-start mb-2 mb-md-0">
+                <img src="{% static 'logo.png' %}" alt="Logo ANAM" class="img-fluid" style="max-height: 75px;">
+            </div>
+            <div class="col-md-6">
+                <h2 class="fw-bold text-primary mb-1">DOCUMENTO DE ORDEN DE TRABAJO</h2>
+                <p class="text-muted mb-0">Servicio Técnico y Mantención ANAM</p>
+            </div>
+            <div class="col-md-4 text-md-end text-start mt-2 mt-md-0">
+                <span class="fs-4 fw-bold d-block text-dark">N° OT: #{{ ot.ot }}</span>
+                <span class="badge bg-primary fs-6 mt-1">Estado: {{ ot.id_estado|default:"Sin Estado" }}</span>
+            </div>
+        </div>
+
+        <!-- Sección 1: Información del Cliente y Equipo -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <div class="border rounded p-3 h-100 bg-light">
+                    <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">
+                        <i class="bi bi-person-fill"></i> Datos del Cliente
+                    </h5>
+                    <p class="mb-2"><strong>Nombre:</strong> {{ ot.id_cliente.nombre_cliente }} {{ ot.id_cliente.apellido_cli }}</p>
+                    <p class="mb-2"><strong>Email:</strong> {{ ot.id_cliente.email_cliente|default:"-" }}</p>
+                    <p class="mb-0"><strong>Teléfono:</strong> {{ ot.id_cliente.telefono|default:"-" }}</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="border rounded p-3 h-100 bg-light">
+                    <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">
+                        <i class="bi bi-tools"></i> Datos del Equipo
+                    </h5>
+                    <p class="mb-2"><strong>ID ANAM:</strong> {{ ot.id_equipo.id_anam }}</p>
+                    <p class="mb-2"><strong>Marca / Modelo:</strong> {{ ot.id_equipo.marca }} - {{ ot.id_equipo.modelo }}</p>
+                    <p class="mb-0"><strong>N° de Serie:</strong> {{ ot.id_equipo.numero_serie|default:"-" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 2: Asignación y Fechas -->
+        <div class="border rounded p-3 mb-4 bg-light">
+            <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">
+                <i class="bi bi-calendar-check"></i> Asignación y Seguimiento
+            </h5>
+            <div class="row text-center text-md-start">
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <strong>Técnico Asignado:</strong>
+                    <div class="text-dark fs-6">{{ ot.id_tecnico|default:"No Asignado" }}</div>
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <strong>Zona:</strong>
+                    <div class="text-dark fs-6">{{ ot.id_zona|default:"Sin Zona" }}</div>
+                </div>
+                <div class="col-md-2 mb-2 mb-md-0">
+                    <strong>Fecha Ingreso:</strong>
+                    <div class="text-dark fs-6">{{ ot.fecha_ingreso|date:"d/m/Y" }}</div>
+                </div>
+                <div class="col-md-2 mb-2 mb-md-0">
+                    <strong>Fecha Término:</strong>
+                    <div class="text-dark fs-6">{{ ot.fecha_termino|date:"d/m/Y"|default:"Pendiente" }}</div>
+                </div>
+                <div class="col-md-2">
+                    <strong>Fecha Retiro:</strong>
+                    <div class="text-dark fs-6">{{ ot.fecha_retiro|date:"d/m/Y"|default:"Pendiente" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 3: Informe Técnico -->
+        <div class="border rounded p-3 mb-4">
+            <h5 class="fw-bold text-secondary border-bottom pb-2 mb-3">
+                <i class="bi bi-file-earmark-text"></i> Informe Técnico
+            </h5>
+
+            <div class="mb-3">
+                <strong class="d-block text-dark mb-1">Observaciones Iniciales:</strong>
+                <div class="p-2 bg-light border rounded text-secondary">
+                    {{ ot.observacion|linebreaks|default:"Sin observaciones registradas." }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <strong class="d-block text-dark mb-1">Diagnóstico Técnico:</strong>
+                <div class="p-2 bg-light border rounded text-secondary">
+                    {{ ot.diagnostico|linebreaks|default:"Sin diagnóstico registrado." }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <strong class="d-block text-dark mb-1">Materiales y Repuestos Utilizados:</strong>
+                <div class="p-2 bg-light border rounded text-secondary">
+                    {{ ot.materiales|linebreaks|default:"Sin materiales registrados." }}
+                </div>
+            </div>
+
+            <div>
+                <strong class="d-block text-dark mb-1">Información de Retiro y Cierre:</strong>
+                <div class="p-2 bg-light border rounded text-secondary">
+                    {{ ot.info_retiro|linebreaks|default:"Sin información de retiro disponible." }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Firmas al imprimir -->
+        <div class="row mt-5 pt-4 text-center">
+            <div class="col-6">
+                <div class="border-top border-dark w-75 mx-auto pt-2">
+                    <strong>Firma Técnico Responsable</strong>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="border-top border-dark w-75 mx-auto pt-2">
+                    <strong>Firma / Conformidad Cliente</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Estilos para impresión -->
+<style>
+@media print {
+    .d-print-none, nav, footer {
+        display: none !important;
+    }
+    body {
+        background-color: white !important;
+    }
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+    }
+}
+</style>
+{% endblock %}

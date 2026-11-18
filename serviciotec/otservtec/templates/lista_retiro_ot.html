@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    
+    <!-- Encabezado y Botones de Navegación -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <a href="{% url 'inicio' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al Inicio
+        </a>
+        <h2 class="m-0 text-center fw-bold text-dark">
+            <i class="bi bi-box-arrow-right text-warning me-2"></i>Gestión y Retiro de Equipos
+        </h2>
+        <a href="{% url 'ot_list' %}" class="btn btn-outline-primary fw-semibold">
+            <i class="bi bi-folder2-open me-1"></i> Ver OT Abiertas
+        </a>
+    </div>
+
+    <!-- Buscador en Tiempo Real -->
+    <div class="card border-0 shadow-sm mb-4 p-3 bg-light">
+        <div class="row align-items-center">
+            <div class="col-md-8 mx-auto">
+                <div class="input-group">
+                    
+                    <input type="text" id="searchInput" class="form-control " placeholder="Buscar por N° OT, cliente, equipo, técnico, zona o estado...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Retiro de Órdenes de Trabajo -->
+    <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="retiroTable">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>N° OT</th>
+                        <th>Cliente</th>
+                        <th>Equipo</th>
+                        <th>Técnico</th>
+                        <th>Zona</th>
+                        <th>Estado</th>
+                        <th>Fecha Ingreso</th>
+                        <th>Fecha Término</th>
+                        <th>Fecha Retiro</th>
+                        <th>Observaciones</th>
+                        <th style="min-width: 140px;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ot in ordentrabajo %}
+                    <tr>
+                        <td class="text-center fw-bold text-primary">#{{ ot.ot }}</td>
+                        <td class="fw-semibold">{{ ot.id_cliente }}</td>
+                        <td>{{ ot.id_equipo }}</td>
+                        <td>{{ ot.id_tecnico|default:"-" }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-light text-dark border">{{ ot.id_zona|default:"-" }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-success text-white px-2 py-1">{{ ot.id_estado|default:"-" }}</span>
+                        </td>
+                        <td class="text-center">{{ ot.fecha_ingreso|date:"d/m/Y" }}</td>
+                        <td class="text-center">{{ ot.fecha_termino|date:"d/m/Y"|default:"-" }}</td>
+                        <td class="text-center">{{ ot.fecha_retiro|date:"d/m/Y"|default:"-" }}</td>
+                        <td>
+                            <small class="text-muted">{{ ot.observacion|truncatewords:8|default:"-" }}</small>
+                        </td>
+                        <td class="text-center">
+                            {% if user.is_authenticated %}
+
+                            <a href="{% url 'form_modificar_retiro' ot.pk %}" class="btn btn-sm btn-warning fw-semibold shadow-sm">
+                                <i class="bi bi-pencil-square me-1"></i> Modificar Retiro
+                            </a>
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="11" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            No hay órdenes registradas para retiro.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Script para Búsqueda Reactiva -->
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#retiroTable tbody tr");
+    rows.forEach(row => {
+        let text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+</script>
+{% endblock %}

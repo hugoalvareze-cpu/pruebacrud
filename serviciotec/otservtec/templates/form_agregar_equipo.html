@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="mb-3">
+        <a href="{% url 'lista_equipo' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a Lista de Equipos
+        </a>
+    </div>
+    
+    <h2 class="mb-4 text-center">Registrar Nuevo Equipo</h2>
+
+    <div class="card shadow-sm p-4 col-md-8 mx-auto">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">ID ANAM</label>
+                    {{ form.id_anam }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Número de Serie</label>
+                    {{ form.numero_serie }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Marca</label>
+                    {{ form.marca }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Modelo</label>
+                    {{ form.modelo }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-bold">Descripción</label>
+                    {{ form.descripcion }}
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4">Guardar Equipo</button>
+                <a href="{% url 'lista_equipo' %}" class="btn btn-secondary px-4">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

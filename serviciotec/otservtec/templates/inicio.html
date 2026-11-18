@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container py-2">
+    
+    <!-- Banner de Bienvenida / Encabezado (Cuadro Azul) -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="p-4 p-md-5 rounded-4 bg-primary text-white shadow-sm position-relative overflow-hidden hero-banner">
+                <div class="row align-items-center position-relative z-1">
+                    
+                    <!-- Columna Izquierda: Texto y Botones -->
+                    <div class="col-lg-8 mb-3 mb-lg-0">
+                        <span class="badge bg-white text-primary mb-2 fw-semibold px-3 py-2 rounded-pill">
+                            <i class="bi bi-shield-check me-1"></i> Sistema de Gestión Técnica
+                        </span>
+                        <h1 class="display-5 fw-bold mb-2">Panel Principal - Mantención ANAM</h1>
+                        <p class="lead mb-3 text-white-50">
+                            Bienvenido al controlador de órdenes de trabajo, equipos, clientes y seguimiento de baterías.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% if user.is_authenticated %}
+
+                            <a href="{% url 'form_agregar_ot' %}" class="btn btn-light fw-bold text-primary shadow-sm">
+                                <i class="bi bi-plus-circle-fill me-1"></i> Nueva Orden de Trabajo
+                            </a>
+                            {% endif %}
+
+                            <a href="{% url 'ot_list' %}" class="btn btn-outline-light">
+                                <i class="bi bi-folder2-open me-1"></i> Ver OT Abiertas
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Logo ANAM -->
+                    <div class="col-lg-4 text-center text-lg-end">
+                        <img src="{% static 'logo.png' %}" alt="Logo ANAM" class="img-fluid" style="max-height: 150px; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección 1: Módulos Principales de Órdenes de Trabajo -->
+    <div class="mb-4">
+        <h4 class="fw-bold text-secondary mb-3 d-flex align-items-center">
+            <i class="bi bi-clipboard-data-fill text-primary me-2"></i> Gestión de Órdenes de Trabajo
+        </h4>
+        <div class="row g-3">
+            
+            <!-- Tarjeta: OT Abiertas -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-square bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3 fs-3">
+                                <i class="bi bi-tools"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title fw-bold mb-0">OT Abiertas</h5>
+                                <small class="text-muted">En proceso técnico</small>
+                            </div>
+                        </div>
+                        <p class="card-text text-secondary mb-4 flex-grow-1">
+                            Listado de órdenes de trabajo activas y pendientes de cierre o retiro.
+                        </p>
+                        <a href="{% url 'ot_list' %}" class="btn btn-outline-primary fw-semibold w-100">
+                            Ingresar Módulo <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta: Historial Total (OT Cerradas) -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-square bg-success bg-opacity-10 text-success rounded-3 p-3 me-3 fs-3">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title fw-bold mb-0">Historial Total (OK)</h5>
+                                <small class="text-muted">Órdenes finalizadas</small>
+                            </div>
+                        </div>
+                        <p class="card-text text-secondary mb-4 flex-grow-1">
+                            Consulte el historial de todas las órdenes finalizadas en estado OK con opción de vista previa.
+                        </p>
+                        <a href="{% url 'ot_total' %}" class="btn btn-outline-success fw-semibold w-100">
+                            Ver Historial <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta: Retiro de Equipos -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-square bg-warning bg-opacity-10 text-warning rounded-3 p-3 me-3 fs-3">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title fw-bold mb-0">Retiro de Equipos</h5>
+                                <small class="text-muted">Despacho y entrega</small>
+                            </div>
+                        </div>
+                        <p class="card-text text-secondary mb-4 flex-grow-1">
+                            Gestione el retiro de equipos y complete las observaciones finales de despacho.
+                        </p>
+                        <a href="{% url 'lista_retiro_ot' %}" class="btn btn-outline-warning text-dark fw-semibold w-100">
+                            Ir a Retiros <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Sección 2: Catálogos y Registros Base -->
+    <div class="mb-4">
+        <h4 class="fw-bold text-secondary mb-3 d-flex align-items-center">
+            <i class="bi bi-layers-fill text-primary me-2"></i> Maestros y Registros del Sistema
+        </h4>
+        <div class="row g-3">
+
+            <!-- Clientes -->
+            <div class="col-md-4 col-lg-2-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card text-center p-3">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="rounded-circle bg-info bg-opacity-10 text-info p-3 mb-3 fs-2">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Clientes</h6>
+                        <small class="text-muted mb-3">Directorio</small>
+                        <a href="{% url 'lista_cliente' %}" class="btn btn-sm btn-light border text-dark w-100 mt-auto fw-semibold">
+                            Ver Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipos -->
+            <div class="col-md-4 col-lg-2-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card text-center p-3">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="rounded-circle bg-dark bg-opacity-10 text-dark p-3 mb-3 fs-2">
+                            <i class="bi bi-cpu-fill"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Equipos</h6>
+                        <small class="text-muted mb-3">Catálogo ANAM</small>
+                        <a href="{% url 'lista_equipo' %}" class="btn btn-sm btn-light border text-dark w-100 mt-auto fw-semibold">
+                            Ver Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zonas -->
+            <div class="col-md-4 col-lg-2-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card text-center p-3">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="rounded-circle bg-danger bg-opacity-10 text-danger p-3 mb-3 fs-2">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Zonas</h6>
+                        <small class="text-muted mb-3">Ubicaciones</small>
+                        <a href="{% url 'lista_zona' %}" class="btn btn-sm btn-light border text-dark w-100 mt-auto fw-semibold">
+                            Ver Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Técnicos -->
+            <div class="col-md-4 col-lg-2-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card text-center p-3">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary p-3 mb-3 fs-2">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Técnicos</h6>
+                        <small class="text-muted mb-3">Personal asignado</small>
+                        <a href="{% url 'lista_tecnicos' %}" class="btn btn-sm btn-light border text-dark w-100 mt-auto fw-semibold">
+                            Ver Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baterías -->
+            <div class="col-md-4 col-lg-2-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 module-card text-center p-3">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="rounded-circle bg-success bg-opacity-10 text-success p-3 mb-3 fs-2">
+                            <i class="bi bi-battery-charging"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Baterías</h6>
+                        <small class="text-muted mb-3">Registro y cambios</small>
+                        <a href="{% url 'lista_bateria' %}" class="btn btn-sm btn-light border text-dark w-100 mt-auto fw-semibold">
+                            Ver Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Estilos para efectos visuales e interacción -->
+<style>
+.hero-banner {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+}
+
+.module-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.module-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1) !important;
+}
+
+.icon-square {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+}
+
+@media (min-width: 992px) {
+    .col-lg-2-4 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                
+                <!-- Encabezado del Formulario -->
+                <div class="text-center mb-4">
+                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center p-3 mb-2" style="width: 60px; height: 60px;">
+                        <i class="bi bi-person-fill fs-2"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark m-0">Iniciar Sesión</h3>
+                    <p class="text-muted small">Acceso al sistema Mantención ANAM</p>
+                </div>
+
+                <!-- Alerta de Error de Credenciales -->
+                {% if form.errors %}
+                <div class="alert alert-danger py-2 text-center small rounded-3 mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Usuario o contraseña incorrectos.
+                </div>
+                {% endif %}
+
+                <!-- Formulario de Autenticación -->
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-bold">Usuario</label>
+                        <input type="text" name="username" id="id_username" class="form-control" placeholder="Nombre de usuario" required autofocus>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label fw-bold">Contraseña</label>
+                        <input type="password" name="password" id="id_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Entrar al Sistema
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

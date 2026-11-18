@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-4">
+    
+    <!-- Botón de retorno y encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{% url 'ot_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a OT Abiertas
+        </a>
+        <h2 class="m-0 text-center fw-bold text-primary">
+            <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nueva Orden de Trabajo
+        </h2>
+        <div></div> <!-- Espaciador para centrar el título -->
+    </div>
+
+    <!-- Tarjeta Principal del Formulario -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Sección 1: Datos Generales -->
+            <div class="card border-0 bg-light p-3 mb-4 rounded-3">
+                <h5 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                    <i class="bi bi-person-vcard-fill me-2"></i> Datos Generales de la Orden
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Cliente</label>
+                        {{ form.id_cliente }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Equipo (ID ANAM)</label>
+                        {{ form.id_equipo }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Zona</label>
+                        {{ form.id_zona }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Técnico Asignado</label>
+                        {{ form.id_tecnico }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Estado Inicial de la OT</label>
+                        {{ form.id_estado }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Fechas de Registro -->
+            <div class="card border-0 bg-light p-3 mb-4 rounded-3">
+                <h5 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                    <i class="bi bi-calendar-event-fill me-2"></i> Fechas de Registro 
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Fecha Ingreso</label>
+                        {{ form.fecha_ingreso }}
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Sección 3: Observaciones e Informe Técnico -->
+            <div class="card border-0 bg-light p-3 mb-4 rounded-3">
+                <h5 class="fw-bold text-primary mb-3 d-flex align-items-center">
+                    <i class="bi bi-file-earmark-text-fill me-2"></i> Observaciones 
+                </h5>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Observaciones Iniciales</label>
+                    {{ form.observacion }}
+                </div>
+                
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">
+                    <i class="bi bi-check-circle-fill me-2"></i>Guardar Orden de Trabajo
+                </button>
+                <a href="{% url 'ot_list' %}" class="btn btn-secondary btn-lg px-4 shadow-sm">
+                    Cancelar
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

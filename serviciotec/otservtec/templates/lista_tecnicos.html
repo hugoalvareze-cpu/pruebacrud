@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    
+    <!-- Encabezado y Botón de Navegación -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <a href="{% url 'inicio' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al Inicio
+        </a>
+        <h2 class="m-0 text-center fw-bold text-dark">
+            <i class="bi bi-person-badge-fill text-secondary me-2"></i>Directorio de Técnicos
+        </h2>
+        <div></div> <!-- Espaciador para equilibrar la cabecera -->
+    </div>
+
+    <!-- Buscador en Tiempo Real -->
+    <div class="card border-0 shadow-sm mb-4 p-3 bg-light">
+        <div class="row align-items-center">
+            <div class="col-md-8 mx-auto">
+                <div class="input-group">
+                    
+                    <input type="text" id="searchInput" class="form-control " placeholder="Buscar técnico por ID, nombre o apellido...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Técnicos -->
+    <div class="card border-0 shadow-sm rounded-3 overflow-hidden col-md-8 mx-auto p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="tecnicosTable">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th style="width: 20%;">ID</th>
+                        <th style="width: 40%;">Nombre</th>
+                        <th style="width: 40%;">Apellido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tecnico in tecnicos %}
+                    <tr>
+                        <td class="text-center fw-bold text-primary">#{{ tecnico.id_tecnico }}</td>
+                        <td class="fw-semibold text-center">{{ tecnico.nombre_tecnico }}</td>
+                        <td class="text-center">{{ tecnico.apellido_tec }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">
+                            <i class="bi bi-person-badge fs-2 d-block mb-2"></i>
+                            No hay técnicos registrados en el sistema.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Script para Búsqueda Reactiva -->
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#tecnicosTable tbody tr");
+    rows.forEach(row => {
+        let text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+</script>
+{% endblock %}
