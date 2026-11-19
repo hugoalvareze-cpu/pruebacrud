@@ -1,4 +1,5 @@
 from django.contrib import admin
+from import_export import resources
 from import_export.admin import ImportExportModelAdmin  # 👈 Importar la clase
 from .models import Cliente, Tecnico, Zona, Estado, Equipo, OrdenTrabajo, Bateria, CambioBateria
 
@@ -67,3 +68,43 @@ class CambioBateriaAdmin(ImportExportModelAdmin):
     list_display = ("ot_bateria", "num_bateria", "id_cliente", "id_zona", "id_tecnico", "fecha_solicitud_bateria", "fecha_retiro_bateria")
     list_filter = ("id_zona", "id_tecnico")
     search_fields = ("num_bateria", "id_cliente__nombre_cliente")
+
+# 1. Definir Resources especificando import_id_fields
+class ClienteResource(resources.ModelResource):
+    class Meta:
+        model = Cliente
+        import_id_fields = ('id_cliente',)  # 👈 Le indica a import-export usar id_cliente
+        fields = ('id_cliente', 'nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
+
+class EquipoResource(resources.ModelResource):
+    class Meta:
+        model = Equipo
+        import_id_fields = ('id_equipo',)
+        fields = ('id_equipo', 'numero_serie', 'id_anam', 'marca', 'modelo', 'descripcion')
+
+class BateriaResource(resources.ModelResource):
+    class Meta:
+        model = Bateria
+        import_id_fields = ('id_bateria',)
+        fields = ('id_bateria', 'num_bateria', 'marca', 'modelo', 'descripcion')
+
+# 2. Vincular los Resources en el Admin mediante resource_classes
+@admin.register(Cliente)
+class ClienteAdmin(ImportExportModelAdmin):
+    resource_classes = [ClienteResource]  # 👈 Vinculación aquí
+    list_display = ('id_cliente', 'nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
+    search_fields = ('nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
+
+@admin.register(Equipo)
+class EquipoAdmin(ImportExportModelAdmin):
+    resource_classes = [EquipoResource]
+    list_display = ('id_equipo', 'numero_serie', 'id_anam', 'marca', 'modelo')
+    search_fields = ('numero_serie', 'id_anam', 'marca', 'modelo')
+
+@admin.register(Bateria)
+class BateriaAdmin(ImportExportModelAdmin):
+    resource_classes = [BateriaResource]
+    list_display = ("id_bateria", "num_bateria", "marca", "modelo")
+    search_fields = ("num_bateria", "marca", "modelo")
+
+# (Mantener los demás modelos como Tecnico, Zona, Estado, OrdenTrabajo, etc.)
