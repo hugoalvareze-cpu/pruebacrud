@@ -121,4 +121,4 @@ MAILERS = {
 LOGIN_URL = 'login'             # URL a donde redirigir si intenta entrar a una vista con @login_required
 LOGIN_REDIRECT_URL = 'inicio'   # URL a donde redirigir tras un inicio de sesión exitoso
 LOGOUT_REDIRECT_URL = 'login'  # URL a donde redirigir tras cerrar sesión
-CSRF_TRUSTED_ORIGINS = ['[suspicious link removed]']
+CSRF_TRUSTED_ORIGINS = ['https://mantenimiento-anam.onrender.com']
