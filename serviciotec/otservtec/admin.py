@@ -1,39 +1,34 @@
 from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportExportModelAdmin  # 👈 Importar la clase
 from .models import Cliente, Tecnico, Zona, Estado, Equipo, OrdenTrabajo, Bateria, CambioBateria
 
 @admin.register(Cliente)
-class ClienteAdmin(admin.ModelAdmin):
+class ClienteAdmin(ImportExportModelAdmin):  # 👈 Cambiar admin.ModelAdmin por ImportExportModelAdmin
     list_display = ('id_cliente', 'nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
     search_fields = ('nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
 
-
 @admin.register(Tecnico)
-class TecnicoAdmin(admin.ModelAdmin):
+class TecnicoAdmin(ImportExportModelAdmin):
     list_display = ('id_tecnico', 'nombre_tecnico', 'apellido_tec')
     search_fields = ('nombre_tecnico', 'apellido_tec')
 
-
 @admin.register(Zona)
-class ZonaAdmin(admin.ModelAdmin):
+class ZonaAdmin(ImportExportModelAdmin):
     list_display = ('id_zona', 'zona')
     search_fields = ('zona',)
 
-
 @admin.register(Estado)
-class EstadoAdmin(admin.ModelAdmin):
+class EstadoAdmin(ImportExportModelAdmin):
     list_display = ('id_estado', 'estado')
     search_fields = ('estado',)
 
-
 @admin.register(Equipo)
-class EquipoAdmin(admin.ModelAdmin):
+class EquipoAdmin(ImportExportModelAdmin):  # 👈 Cambiar admin.ModelAdmin por ImportExportModelAdmin
     list_display = ('id_equipo', 'numero_serie', 'id_anam', 'marca', 'modelo')
     search_fields = ('numero_serie', 'id_anam', 'marca', 'modelo')
 
-
 @admin.register(OrdenTrabajo)
-class OrdenTrabajoAdmin(admin.ModelAdmin):
+class OrdenTrabajoAdmin(ImportExportModelAdmin):  # 👈 Cambiar admin.ModelAdmin por ImportExportModelAdmin
     list_display = (
         'ot', 'get_cliente', 'get_equipo', 'get_zona',
         'get_tecnico', 'get_estado', 'fecha_ingreso',
@@ -47,7 +42,7 @@ class OrdenTrabajoAdmin(admin.ModelAdmin):
     get_cliente.short_description = 'Cliente'
 
     def get_equipo(self, obj):
-        return f"{obj.id_equipo.id_anam} "
+        return f"{obj.id_equipo.id_anam}"
     get_equipo.short_description = 'Equipo'
 
     def get_zona(self, obj):
@@ -55,33 +50,20 @@ class OrdenTrabajoAdmin(admin.ModelAdmin):
     get_zona.short_description = 'Zona'
 
     def get_tecnico(self, obj):
-        return f"{obj.id_tecnico.nombre_tecnico} {obj.id_tecnico.apellido_tec}" if obj.id_tecnico else  "-"
+        return f"{obj.id_tecnico.nombre_tecnico} {obj.id_tecnico.apellido_tec}" if obj.id_tecnico else "-"
+    get_tecnico.short_description = 'Técnico'
+
     def get_estado(self, obj):
         return obj.id_estado.estado if obj.id_estado else "-"
     get_estado.short_description = 'Estado'
 
 @admin.register(Bateria)
-class BateriaAdmin(admin.ModelAdmin):
+class BateriaAdmin(ImportExportModelAdmin):  # 👈 Cambiar admin.ModelAdmin por ImportExportModelAdmin
     list_display = ("id_bateria", "num_bateria", "marca", "modelo")
     search_fields = ("num_bateria", "marca", "modelo")
 
 @admin.register(CambioBateria)
-class CambioBateriaAdmin(admin.ModelAdmin):
+class CambioBateriaAdmin(ImportExportModelAdmin):
     list_display = ("ot_bateria", "num_bateria", "id_cliente", "id_zona", "id_tecnico", "fecha_solicitud_bateria", "fecha_retiro_bateria")
     list_filter = ("id_zona", "id_tecnico")
     search_fields = ("num_bateria", "id_cliente__nombre_cliente")
-
-@admin.register(Cliente)
-class ClienteAdmin(ImportExportModelAdmin):
-    list_display = ('id_cliente', 'nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
-    search_fields = ('nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
-
-@admin.register(Equipo)
-class EquipoAdmin(ImportExportModelAdmin):
-    list_display = ('id_equipo', 'numero_serie', 'id_anam', 'marca', 'modelo')
-    search_fields = ('numero_serie', 'id_anam', 'marca', 'modelo')
-
-@admin.register(Bateria)
-class BateriaAdmin(ImportExportModelAdmin):
-    list_display = ("id_bateria", "num_bateria", "marca", "modelo")
-    search_fields = ("num_bateria", "marca", "modelo")
