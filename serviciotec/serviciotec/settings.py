@@ -1,5 +1,6 @@
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 import os
 
@@ -61,15 +62,12 @@ WSGI_APPLICATION = 'serviciotec.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+# Configuración de Base de Datos (Usa PostgreSQL en Render y SQLite localmente)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('NAME_APP'),
-        'USER': config('USER_APP'),
-        'PASSWORD': config('PASS_APP'),
-        'HOST': config('HOST_APP'),
-        'PORT': config('PORT_APP')
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
+    )
 }
 
 
