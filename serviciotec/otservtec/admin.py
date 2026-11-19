@@ -1,4 +1,5 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
 from .models import Cliente, Tecnico, Zona, Estado, Equipo, OrdenTrabajo, Bateria, CambioBateria
 
 @admin.register(Cliente)
@@ -69,3 +70,18 @@ class CambioBateriaAdmin(admin.ModelAdmin):
     list_display = ("ot_bateria", "num_bateria", "id_cliente", "id_zona", "id_tecnico", "fecha_solicitud_bateria", "fecha_retiro_bateria")
     list_filter = ("id_zona", "id_tecnico")
     search_fields = ("num_bateria", "id_cliente__nombre_cliente")
+
+@admin.register(Cliente)
+class ClienteAdmin(ImportExportModelAdmin):
+    list_display = ('id_cliente', 'nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
+    search_fields = ('nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
+
+@admin.register(Equipo)
+class EquipoAdmin(ImportExportModelAdmin):
+    list_display = ('id_equipo', 'numero_serie', 'id_anam', 'marca', 'modelo')
+    search_fields = ('numero_serie', 'id_anam', 'marca', 'modelo')
+
+@admin.register(Bateria)
+class BateriaAdmin(ImportExportModelAdmin):
+    list_display = ("id_bateria", "num_bateria", "marca", "modelo")
+    search_fields = ("num_bateria", "marca", "modelo")
