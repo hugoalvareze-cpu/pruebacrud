@@ -1,13 +1,15 @@
 from django.contrib import admin
-from import_export import resources
+from import_export import resources, fields
+from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
+
 from .models import (
     Cliente, Tecnico, Zona, Estado, Equipo, 
     OrdenTrabajo, Bateria, CambioBateria
 )
 
 # ==========================================
-# 1. RECURSOS DE IMPORTACIÓN / EXPORTACIÓN (CSV)
+# 1. RECURSOS DE IMPORTACIÓN / EXPORTACIÓN
 # ==========================================
 
 class ClienteResource(resources.ModelResource):
@@ -28,40 +30,50 @@ class BateriaResource(resources.ModelResource):
         import_id_fields = ('id_bateria',)
         fields = ('id_bateria', 'num_bateria', 'marca', 'modelo', 'descripcion')
 
+# Resource para OrdenTrabajo mapeando claves foráneas y la clave primaria 'ot'
+class OrdenTrabajoResource(resources.ModelResource):
+    id_cliente = fields.Field(
+        column_name='id_cliente',
+        attribute='id_cliente',
+        widget=ForeignKeyWidget(Cliente, 'id_cliente')
+    )
+    id_equipo = fields.Field(
+        column_name='id_equipo',
+        attribute='id_equipo',
+        widget=ForeignKeyWidget(Equipo, 'id_equipo')
+    )
+    id_zona = fields.Field(
+        column_name='id_zona',
+        attribute='id_zona',
+        widget=ForeignKeyWidget(Zona, 'id_zona')
+    )
+    id_tecnico = fields.Field(
+        column_name='id_tecnico',
+        attribute='id_tecnico',
+        widget=ForeignKeyWidget(Tecnico, 'id_tecnico')
+    )
+    id_estado = fields.Field(
+        column_name='id_estado',
+        attribute='id_estado',
+        widget=ForeignKeyWidget(Estado, 'id_estado')
+    )
+
+    class Meta:
+        model = OrdenTrabajo
+        import_id_fields = ('ot',)  # 👈 Define 'ot' como la clave primaria
+        fields = (
+            'ot', 'id_cliente', 'id_equipo', 'id_zona', 'id_tecnico', 
+            'id_estado', 'observacion', 'diagnostico', 'materiales', 
+            'info_retiro', 'fecha_ingreso', 'fecha_termino', 'fecha_retiro'
+        )
 
 # ==========================================
-# 2. REGISTRO ÚNICO DE MODELOS EN EL ADMIN
+# 2. REGISTRO DE MODELOS EN EL ADMIN
 # ==========================================
-
-@admin.register(Cliente)
-class ClienteAdmin(ImportExportModelAdmin):
-    resource_classes = [ClienteResource]
-    list_display = ('id_cliente', 'nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
-    search_fields = ('nombre_cliente', 'apellido_cli', 'email_cliente', 'telefono')
-
-@admin.register(Tecnico)
-class TecnicoAdmin(ImportExportModelAdmin):
-    list_display = ('id_tecnico', 'nombre_tecnico', 'apellido_tec')
-    search_fields = ('nombre_tecnico', 'apellido_tec')
-
-@admin.register(Zona)
-class ZonaAdmin(ImportExportModelAdmin):
-    list_display = ('id_zona', 'zona')
-    search_fields = ('zona',)
-
-@admin.register(Estado)
-class EstadoAdmin(ImportExportModelAdmin):
-    list_display = ('id_estado', 'estado')
-    search_fields = ('estado',)
-
-@admin.register(Equipo)
-class EquipoAdmin(ImportExportModelAdmin):
-    resource_classes = [EquipoResource]
-    list_display = ('id_equipo', 'numero_serie', 'id_anam', 'marca', 'modelo')
-    search_fields = ('numero_serie', 'id_anam', 'marca', 'modelo')
 
 @admin.register(OrdenTrabajo)
 class OrdenTrabajoAdmin(ImportExportModelAdmin):
+    resource_classes = [OrdenTrabajoResource]  # 👈 Asigna el recurso de importación
     list_display = (
         'ot', 'get_cliente', 'get_equipo', 'get_zona',
         'get_tecnico', 'get_estado', 'fecha_ingreso',
@@ -89,19 +101,3 @@ class OrdenTrabajoAdmin(ImportExportModelAdmin):
     def get_estado(self, obj):
         return obj.id_estado.estado if obj.id_estado else "-"
     get_estado.short_description = 'Estado'
-
-@admin.register(Bateria)
-class BateriaAdmin(ImportExportModelAdmin):
-    resource_classes = [BateriaResource]
-    list_display = ("id_bateria", "num_bateria", "marca", "modelo")
-    search_fields = ("num_bateria", "marca", "modelo")
-
-@admin.register(CambioBateria)
-class CambioBateriaAdmin(ImportExportModelAdmin):
-    list_display = (
-        "ot_bateria", "num_bateria", "id_cliente", 
-        "id_zona", "id_tecnico", "fecha_solicitud_bateria", 
-        "fecha_retiro_bateria"
-    )
-    list_filter = ("id_zona", "id_tecnico")
-    search_fields = ("num_bateria", "id_cliente__nombre_cliente")
